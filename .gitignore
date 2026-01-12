@@ -187,6 +187,7 @@ data/lematbulk_full_distribution_properties.pkl
 data/lematbulk_mmd_values.pkl 
 
 # Local testing
+logs/
 submissions/
 final_results/
 final_results_new/
