@@ -1,5 +1,6 @@
 ARG PYTORCH_TAG=2.6.0-cuda12.4-cudnn9-devel
 FROM pytorch/pytorch:${PYTORCH_TAG}
+COPY --from=ghcr.io/astral-sh/uv:0.9.24 /uv /uvx /bin/
 
 # Add system dependencies
 RUN apt-get update \
@@ -34,16 +35,16 @@ RUN apt-get update \
     && apt-get autoremove -y \
     && apt-get clean
 
-# Install uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Add ~/.local/bin to PATH
-ENV PATH="/root/.local/bin:${PATH}"
-
 # Set work directory
 WORKDIR /app/lemat-genbench
 
-# Clone and install the package + requirements
+# Clone the repository
 ARG GIT_TAG=main
-RUN git clone https://github.com/amorehead/lemat-genbench . --branch ${GIT_TAG} \
-    && uv sync
+RUN git clone https://github.com/amorehead/lemat-genbench . --branch ${GIT_TAG}
+
+# Disable development dependencies
+ENV UV_NO_DEV=1
+
+# Sync the project into a new environment, asserting the lockfile is up to date
+WORKDIR /app
+RUN uv sync --locked
