@@ -43,4 +43,5 @@ WORKDIR /app/lemat-genbench
 # Clone and install the package + requirements
 ARG GIT_TAG=main
 RUN git clone https://github.com/amorehead/lemat-genbench . --branch ${GIT_TAG} \
+    && source $HOME/.local/bin/env \
     && uv sync
